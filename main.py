@@ -1,6 +1,12 @@
-from openai import AzureOpenAI
-from dotenv import load_dotenv
+"""
+Customer Support Response Generator.
+
+This script collects user input and generates enterprise-safe
+customer support responses using Azure OpenAI.
+"""
 import os
+from dotenv import load_dotenv
+from openai import AzureOpenAI
 from prompts import PROMPTS
 
 load_dotenv()
@@ -17,13 +23,14 @@ DEPLOYMENT_NAME = os.getenv("AZURE_MODEL")
 # print("Key Loaded:", bool(os.getenv("AZURE_OPENAI_API_KEY")))
 
 
-def show_menu():
-    print("\n=== Customer Support Response Generator ===")
-    for key, value in PROMPTS.items():
-        print(f"{key}. {value['name']}")
-
 
 def get_user_inputs():
+    """
+       Collects required user inputs for the selected prompt template.
+
+       Returns:
+           dict: User-provided values mapped to template variables.
+       """
     return {
         "company_name": input("Enter company name: "),
         "product_name": input("Enter product/service name: "),
@@ -35,7 +42,17 @@ def get_user_inputs():
 
 
 def main():
-    show_menu()
+    """
+       Main application entry point.
+
+       Prompts the user for a template choice, gathers inputs,
+       sends the request to Azure OpenAI, and prints the response.
+       """
+    print("\n=== Customer Support Response Generator ===")
+    print("1. General Customer Support ")
+    print("2. Billing Support")
+    print("3. Technical Support")
+
     choice = input("\nChoose a support type (1/2/3): ")
 
     if choice not in PROMPTS:
@@ -46,12 +63,12 @@ def main():
     prompt = PROMPTS[choice]["template"].format(**inputs)
 
     response = client.chat.completions.create(
-        model=DEPLOYMENT_NAME,   # ✅ DEPLOYMENT NAME ONLY
+        model=DEPLOYMENT_NAME,
         messages=[
-            {"role": "system", "content": "You generate enterprise-safe customer support responses."},
+            {"role": "system", "content": "Generate enterprise-safe customer-support-responses"},
             {"role": "user", "content": prompt}
         ],
-        temperature=0.3,
+        temperature=0.7,
         max_tokens=300
     )
 

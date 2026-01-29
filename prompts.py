@@ -1,3 +1,6 @@
+"""
+Prompt templates used by the Customer Support application.
+"""
 PROMPTS = {
     "1": {
     "name": "General Customer Support",
